@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class Utilities {
@@ -10,6 +12,9 @@ class Utilities {
   static double vScale(double x, BuildContext context){
     double height = MediaQuery.of(context).size.height;
     return (height/guidelineBaseHeight)*x;
+  }
+  static double getRoundImageSize(double size, BuildContext context){
+    return min(Utilities.scale(size, context), Utilities.vScale(size, context));
   }
   static String getMonthString(int x){
     String month = "";

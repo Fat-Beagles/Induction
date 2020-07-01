@@ -4,9 +4,6 @@ import 'package:induction/Utilities.dart';
 import 'ColorCodes.dart';
 import 'Schedule.dart';
 
-import 'ColorCodes.dart';
-import 'ColorCodes.dart';
-
 class ScheduleState extends State<Schedule> {
 
   Widget dayTile(BuildContext context, int day, int month, int wDay, int dayNum){
@@ -26,31 +23,31 @@ class ScheduleState extends State<Schedule> {
           "$day $mm,",
           style: TextStyle(
               fontFamily: 'Poppins',
-              fontSize: Utilities.scale(30.0, context),
+              fontSize: Utilities.vScale(30.0, context),
               color: (active==1)?MaterialColor(0xFF114546, darkSeaGreenColorCodes):MaterialColor(0xFF14a098, seaGreenColorCodes)
           ),
         ),
       ),
       Positioned(
         left: 0,
-        bottom: Utilities.scale(10,context),
+        bottom: Utilities.vScale(10,context),
         child: Text(
           "$wdd",
           style: TextStyle(
               fontFamily: 'Poppins',
-              fontSize: Utilities.scale(30.0, context),
+              fontSize: Utilities.vScale(30.0, context),
               color: (active==1)?MaterialColor(0xFF114546, darkSeaGreenColorCodes):MaterialColor(0xFF14a098, seaGreenColorCodes)
           ),
         ),
       ),
       Positioned(
         right: 0,
-        top: Utilities.scale(10,context),
+        top: Utilities.vScale(10,context),
         child: Text(
           "DAY $dayNum",
           style: TextStyle(
               fontFamily: 'Poppins',
-              fontSize: Utilities.scale(30.0, context),
+              fontSize: Utilities.vScale(30.0, context),
               color: (active==1)?MaterialColor(0xFF114546, darkSeaGreenColorCodes):MaterialColor(0xFF14a098, seaGreenColorCodes)
           ),
         ),
@@ -59,7 +56,7 @@ class ScheduleState extends State<Schedule> {
 
     return SizedBox(
       width: Utilities.scale(MediaQuery.of(context).size.width,context),
-      height: Utilities.scale(MediaQuery.of(context).size.height/10,context),
+      height: Utilities.vScale(100,context),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: (active==1)?MaterialColor(0xFF14a098, seaGreenColorCodes):MaterialColor(0xFF114546, darkSeaGreenColorCodes),
@@ -89,39 +86,39 @@ class ScheduleState extends State<Schedule> {
       backgroundColor: MaterialColor(0xff262833, darkSeaGreenColorCodes),
       body: SingleChildScrollView (
           child: Container(
-            padding: EdgeInsets.only(top: Utilities.scale(MediaQuery.of(context).padding.top*2, context), left: Utilities.scale(30,context), right: Utilities.scale(30,context), bottom: Utilities.scale(30,context)),
+            padding: EdgeInsets.only(top: Utilities.vScale(MediaQuery.of(context).padding.top*2, context), left: Utilities.scale(30,context), right: Utilities.scale(30,context), bottom: Utilities.vScale(30,context)),
             child: Column(
               children: <Widget>[
                 Center(
                   child: Text(
                     "SCHEDULE",
                     style: TextStyle(
-                        fontSize: Utilities.scale(55,context),
+                        fontSize: Utilities.vScale(55,context),
                         fontWeight: FontWeight.bold,
                         color: MaterialColor(0xcccb2d6f, magentaColorCodes),
                         fontFamily: "Poppins"
                     ),
                   ),
                 ),
-                Padding(padding: EdgeInsets.only(top: Utilities.scale(30,context))),
+                Padding(padding: EdgeInsets.only(top: Utilities.vScale(30,context))),
                 dayTile(context, 26, 6, 5, 4),
-                Padding(padding: EdgeInsets.only(top: Utilities.scale(13,context))),
+                Padding(padding: EdgeInsets.only(top: Utilities.vScale(13,context))),
                 dayTile(context, 24, 5, 5, 4),
-                Padding(padding: EdgeInsets.only(top: Utilities.scale(13,context))),
+                Padding(padding: EdgeInsets.only(top: Utilities.vScale(13,context))),
                 dayTile(context, 24, 4, 5, 4),
-                Padding(padding: EdgeInsets.only(top: Utilities.scale(13,context))),
+                Padding(padding: EdgeInsets.only(top: Utilities.vScale(13,context))),
                 dayTile(context, 24, 3, 5, 4),
-                Padding(padding: EdgeInsets.only(top: Utilities.scale(13,context))),
+                Padding(padding: EdgeInsets.only(top: Utilities.vScale(13,context))),
                 dayTile(context, 24, 1, 5, 4),
-                Padding(padding: EdgeInsets.only(top: Utilities.scale(13,context))),
+                Padding(padding: EdgeInsets.only(top: Utilities.vScale(13,context))),
                 dayTile(context, 24, 2, 5, 4),
-                Padding(padding: EdgeInsets.only(top: Utilities.scale(13,context))),
+                Padding(padding: EdgeInsets.only(top: Utilities.vScale(13,context))),
                 dayTile(context, 24, 10, 5, 4),
-                Padding(padding: EdgeInsets.only(top: Utilities.scale(13,context))),
+                Padding(padding: EdgeInsets.only(top: Utilities.vScale(13,context))),
                 dayTile(context, 24, 11, 5, 4),
-                Padding(padding: EdgeInsets.only(top: Utilities.scale(13,context))),
+                Padding(padding: EdgeInsets.only(top: Utilities.vScale(13,context))),
                 dayTile(context, 24, 12, 5, 4),
-                Padding(padding: EdgeInsets.only(top: Utilities.scale(13,context))),
+                Padding(padding: EdgeInsets.only(top: Utilities.vScale(13,context))),
                 dayTile(context, 24, 8, 5, 4),
               ],
             ),

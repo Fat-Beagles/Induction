@@ -53,7 +53,9 @@ class PrimaryState extends State<Primary> {
       children: <Widget>[
         Home(),
         Schedule(),
-        Profile(),
+        Profile(
+            user: widget.user
+        ),
       ],
     );
   }
