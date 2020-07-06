@@ -1,10 +1,46 @@
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:induction/Utilities.dart';
 import 'ColorCodes.dart';
 import 'Schedule.dart';
 
 class ScheduleState extends State<Schedule> {
+  List<dynamic> schedule;
+  List<String> days;
+
+  FirebaseDatabase scheduleDB;
+  DatabaseReference scheduleDBRef;
+  @override
+  void initState(){
+    if(mounted){
+      setState((){
+        scheduleDB = FirebaseDatabase(databaseURL: DotEnv().env['DB_URL']);
+        scheduleDBRef = scheduleDB.reference().child('Schedule');
+      });
+    }
+    getScheduleFromDB();
+    super.initState();
+  }
+
+  void getScheduleFromDB() async{
+    DataSnapshot data = await scheduleDBRef.once();
+    dynamic values = data.value;
+    if(mounted){
+      setState(() {
+        schedule = values;
+        days = new List();
+        for(var i=1; i<((schedule!=null)?schedule.length:0); i++){
+          days.add(schedule[i]['date']+' '+schedule[i]['day'].toString());
+        }
+        Set<String> daysFinal = new Set.from(days);
+        days = new List.from(daysFinal);
+        days.sort((a,b)=> Utilities.compareDays(a, b));
+      });
+    }
+  }
 
   Widget dayTile(BuildContext context, int day, int month, int wDay, int dayNum){
     int active = 0 ;
@@ -18,7 +54,7 @@ class ScheduleState extends State<Schedule> {
     List<Widget> positionedWidgets = [
       Positioned(
         left: 0,
-        top: Utilities.scale(10,context),
+        top: Utilities.vScale(10,context),
         child: Text(
           "$day $mm,",
           style: TextStyle(
@@ -82,45 +118,34 @@ class ScheduleState extends State<Schedule> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> scheduleContents = [
+      Center(
+        child: Text(
+          "SCHEDULE",
+          style: TextStyle(
+              fontSize: Utilities.vScale(55,context),
+              fontWeight: FontWeight.bold,
+              color: MaterialColor(0xcccb2d6f, magentaColorCodes),
+              fontFamily: "Poppins"
+          ),
+        ),
+      ),
+    ];
+    for(var i=0; i<((days!=null)?days.length:0); i++){
+      List<String> date = days[i].split('-');
+      int dd = int.parse(date[0]);
+      int mm = int.parse(date[1]);
+      int wDay = int.parse(date[2].split(' ')[1]);
+      scheduleContents.add(Padding(padding: EdgeInsets.only(top: Utilities.vScale((i==0)?30:13,context))));
+      scheduleContents.add(dayTile(context, dd, mm, wDay, i+1));
+    }
     return Scaffold(
       backgroundColor: MaterialColor(0xff262833, darkSeaGreenColorCodes),
       body: SingleChildScrollView (
           child: Container(
             padding: EdgeInsets.only(top: Utilities.vScale(MediaQuery.of(context).padding.top*2, context), left: Utilities.scale(30,context), right: Utilities.scale(30,context), bottom: Utilities.vScale(30,context)),
             child: Column(
-              children: <Widget>[
-                Center(
-                  child: Text(
-                    "SCHEDULE",
-                    style: TextStyle(
-                        fontSize: Utilities.vScale(55,context),
-                        fontWeight: FontWeight.bold,
-                        color: MaterialColor(0xcccb2d6f, magentaColorCodes),
-                        fontFamily: "Poppins"
-                    ),
-                  ),
-                ),
-                Padding(padding: EdgeInsets.only(top: Utilities.vScale(30,context))),
-                dayTile(context, 26, 6, 5, 4),
-                Padding(padding: EdgeInsets.only(top: Utilities.vScale(13,context))),
-                dayTile(context, 24, 5, 5, 4),
-                Padding(padding: EdgeInsets.only(top: Utilities.vScale(13,context))),
-                dayTile(context, 24, 4, 5, 4),
-                Padding(padding: EdgeInsets.only(top: Utilities.vScale(13,context))),
-                dayTile(context, 24, 3, 5, 4),
-                Padding(padding: EdgeInsets.only(top: Utilities.vScale(13,context))),
-                dayTile(context, 24, 1, 5, 4),
-                Padding(padding: EdgeInsets.only(top: Utilities.vScale(13,context))),
-                dayTile(context, 24, 2, 5, 4),
-                Padding(padding: EdgeInsets.only(top: Utilities.vScale(13,context))),
-                dayTile(context, 24, 10, 5, 4),
-                Padding(padding: EdgeInsets.only(top: Utilities.vScale(13,context))),
-                dayTile(context, 24, 11, 5, 4),
-                Padding(padding: EdgeInsets.only(top: Utilities.vScale(13,context))),
-                dayTile(context, 24, 12, 5, 4),
-                Padding(padding: EdgeInsets.only(top: Utilities.vScale(13,context))),
-                dayTile(context, 24, 8, 5, 4),
-              ],
+              children: scheduleContents
             ),
           )
       )

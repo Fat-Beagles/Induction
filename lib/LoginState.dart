@@ -34,7 +34,6 @@ class LoginState extends State<Login>{
     var result=await loginService(email, password);
     emailController.text='';
     passwordController.text='';
-    print(result);
     if(result is bool){
       if(result){
         Navigator.push(

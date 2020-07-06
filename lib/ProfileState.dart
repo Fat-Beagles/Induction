@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -9,33 +10,45 @@ import 'ColorCodes.dart';
 import 'Profile.dart';
 
 class ProfileState extends State<Profile> {
-  String displayName;
-  String email;
-  String photoUrl;
-  String uid;
-  String branch;
-  String groupColor;
-  String instagram;
+  String displayName='';
+  String email='';
+  String photoUrl='';
+  String uid='';
+  String branch='';
+  dynamic groupColor='';
+  String instagram='';
   FirebaseStorage storage;
+  FirebaseDatabase userDB;
+  DatabaseReference userDataRef;
 
   @override
   void initState(){
-    setState(() {
-      storage = FirebaseStorage(storageBucket: DotEnv().env['STORAGE_URL']);
-      displayName = widget.user.displayName;
-      email = widget.user.email;
-      photoUrl = widget.user.photoUrl;
-      photoUrl = photoUrl==null?DotEnv().env['DEF_IMAGE']:photoUrl;
-      branch = "CSAM";
-      groupColor = "Blue";
-      instagram = "@dhruvsahnan";
-      uid = widget.user.uid;
-    });
-    print(displayName);
-    print(email);
-    print(photoUrl);
-    print(uid);
+    if(mounted){
+      setState(() {
+        storage = FirebaseStorage(storageBucket: DotEnv().env['STORAGE_URL']);
+        displayName = widget.user.displayName;
+        email = widget.user.email;
+        photoUrl = widget.user.photoUrl;
+        photoUrl = photoUrl==null?DotEnv().env['DEF_IMAGE']:photoUrl;
+        uid = widget.user.uid;
+        userDB = FirebaseDatabase(databaseURL: DotEnv().env['DB_URL']);
+        userDataRef= userDB.reference().child('users/$uid');//.child('uid');
+      });
+    }
+    getValFromDB();
     super.initState();
+  }
+
+  void getValFromDB() async{
+    DataSnapshot data = await userDataRef.once();
+    dynamic dataValues = data.value;
+    if(mounted){
+      setState(() {
+        branch = dataValues['branch'];
+        groupColor = dataValues['groupCode'];
+        instagram = dataValues['instaHandle'];
+      });
+    }
   }
 
   @override
@@ -123,7 +136,7 @@ class ProfileState extends State<Profile> {
                   ),
                   child: Center(
                       child: Text(
-                          displayName,
+                          displayName==null?'':displayName,
                           style: TextStyle(
                             fontSize: Utilities.vScale(30, context),
                             color: Colors.white,
@@ -154,7 +167,7 @@ class ProfileState extends State<Profile> {
                           ),
                         ),
                         Text(
-                          "\n${instagram==null?'':"Instagram: @dhruvsahnan"}\n",
+                          "\n${instagram==null?'':"Instagram: $instagram"}\n",
                           style: TextStyle(
                               fontSize: Utilities.vScale(25, context),
                               color: Colors.white
