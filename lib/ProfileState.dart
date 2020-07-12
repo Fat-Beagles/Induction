@@ -5,7 +5,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:induction/EditProfile.dart';
 import 'package:induction/Utilities.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'ColorCodes.dart';
 import 'Profile.dart';
 
@@ -15,28 +17,51 @@ class ProfileState extends State<Profile> {
   String photoUrl='';
   String uid='';
   String branch='';
+  String bio='';
   dynamic groupColor='';
+  MaterialColor ringColor;
   String instagram='';
   FirebaseStorage storage;
   FirebaseDatabase userDB;
   DatabaseReference userDataRef;
+  FirebaseUser user;
 
   @override
   void initState(){
     if(mounted){
       setState(() {
         storage = FirebaseStorage(storageBucket: DotEnv().env['STORAGE_URL']);
-        displayName = widget.user.displayName;
-        email = widget.user.email;
-        photoUrl = widget.user.photoUrl;
+        user = widget.user;
+        displayName = user.displayName;
+        email = user.email;
+        photoUrl = user.photoUrl;
         photoUrl = photoUrl==null?DotEnv().env['DEF_IMAGE']:photoUrl;
-        uid = widget.user.uid;
+        print(photoUrl);
+        uid = user.uid;
         userDB = FirebaseDatabase(databaseURL: DotEnv().env['DB_URL']);
         userDataRef= userDB.reference().child('users/$uid');//.child('uid');
       });
     }
     getValFromDB();
     super.initState();
+  }
+
+  void reloadUser() async{
+    await user.reload();
+    var _user = await FirebaseAuth.instance.currentUser();
+    if(mounted){
+      setState(() {
+        user = _user;
+        displayName = user.displayName;
+        email = user.email;
+        photoUrl = user.photoUrl;
+        photoUrl = photoUrl==null?DotEnv().env['DEF_IMAGE']:photoUrl;
+        uid = user.uid;
+        userDB = FirebaseDatabase(databaseURL: DotEnv().env['DB_URL']);
+        userDataRef= userDB.reference().child('users/$uid');//.child('uid');
+      });
+    }
+    getValFromDB();
   }
 
   void getValFromDB() async{
@@ -46,8 +71,35 @@ class ProfileState extends State<Profile> {
       setState(() {
         branch = dataValues['branch'];
         groupColor = dataValues['groupCode'];
+        ringColor = (groupColor=='Green')?Colors.green:Colors.blue;
+        bio = dataValues['bio'];
         instagram = dataValues['instaHandle'];
       });
+    }
+  }
+
+  void openIg() async{
+    var url = 'https://www.instagram.com/${instagram.replaceAll('@', '')}';
+    if(await canLaunch(url)) {
+      await launch(url, universalLinksOnly: true);
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+                title: Text("Failed to open Instagram"),
+                content: Text("Please try again later. If still failing, please report to us!"),
+                actions: <Widget>[
+                  FlatButton(
+                    child: new Text("Okay"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ]
+            );
+          }
+      );
     }
   }
 
@@ -95,7 +147,7 @@ class ProfileState extends State<Profile> {
                     color: MaterialColor(0xff262833, darkSeaGreenColorCodes),
                     borderRadius: BorderRadius.circular(Utilities.getRoundImageSize(355, context)/2),
                     border: Border.all(
-                      color: Colors.white, //Border color same as the group color.
+                      color: (ringColor==null)?Colors.white:ringColor, //Border color same as the group color.
                       width: Utilities.scale(5,context)
                     ),
                   ),
@@ -111,12 +163,21 @@ class ProfileState extends State<Profile> {
                 decoration: new BoxDecoration(
                     shape: BoxShape.circle,
                     image: new DecorationImage(
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                         image: NetworkImage(photoUrl)
                     )
                 ),
                 child: FlatButton(
-                  onPressed: () => {print("Hello")},
+                  onPressed: () => {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => EditProfile(
+                        user: user,
+                        bio: bio,
+                        instagram: instagram,
+                        ringColor: ringColor,
+                      ))).then((value) => reloadUser())
+                    },
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(Utilities.getRoundImageSize(335, context)/2)
                   ),
@@ -159,26 +220,50 @@ class ProfileState extends State<Profile> {
                   child: Center(
                     child: Column(
                       children: <Widget>[
+                        Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
                         Text(
-                          "\nBranch         $branch\nGroup          $groupColor\n",
-                          style: TextStyle(
-                              fontSize: Utilities.vScale(30, context),
-                              color: Colors.white
-                          ),
-                        ),
-                        Text(
-                          "\n${instagram==null?'':"Instagram: $instagram"}\n",
+                          "$bio",
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: Utilities.vScale(25, context),
                               color: Colors.white
                           ),
-                        )
+                        ),
+                        Padding(padding: EdgeInsets.only(top: Utilities.vScale(10, context))),
+                        Text(
+                          "~ From $branch",
+//                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: Utilities.vScale(18, context),
+                              color: Colors.white
+                          ),
+                        ),
+                        Padding(padding: EdgeInsets.only(top: Utilities.vScale(8, context))),
+                        SizedBox(
+                          height: Utilities.vScale(40, context),
+                          width: Utilities.scale(MediaQuery.of(context).size.width - 100, context),
+                          child: FlatButton(
+                            onPressed: openIg,
+                            child: Text(
+                                '${(instagram=='')?'':'Instagram: $instagram'}',
+                                style: TextStyle(
+                                  fontSize: Utilities.vScale(22,context),
+                                  color: MaterialColor(0xFFcdcdcd, greyColorCodes),
+                                )
+                            ),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(Utilities.scale(25.0,context))
+                            ),
+                          ),
+                        ),
+                        Padding(padding: EdgeInsets.only(top: Utilities.vScale(7, context))),
                       ],
                     )
                   ),
                 ),
               ),
             ),
+
           ],
         )
     );

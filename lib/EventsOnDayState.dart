@@ -1,5 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
+//import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:induction/EventsOnDay.dart';
@@ -33,59 +33,115 @@ class EventsOnDayState extends State<EventsOnDay> {
     }
   }
 
-  Widget eventTile(BuildContext context, dynamic event){
-    List<Widget> positionedWidgets = [
-      Positioned(
-        left: 0,
-        top: Utilities.vScale(10,context),
-        child: Text(
-          "",
-          style: TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: Utilities.vScale(30.0, context),
-              color: (event['active']==1)?MaterialColor(0xFF114546, darkSeaGreenColorCodes):MaterialColor(0xFF14a098, seaGreenColorCodes)
-          ),
-        ),
+  Widget _buildTitle(BuildContext context, dynamic event){
+    List<String> words = event['eventName'].split(' ');
+    String title='';
+    if(event['eventName'].length>10){
+      if(words.length >= 2){
+        int mid = (words.length/2).floor();
+        for(var i=0; i<mid; i++){
+          title= title+words[i]+" ";
+        }
+        title= title+"\n";
+        for(var i=mid; i<words.length; i++){
+          title= title+words[i]+" ";
+        }
+      }
+    }
+    else{
+      title= event['eventName'];
+    }
+    return SizedBox(
+      height: Utilities.vScale(80,context),
+      child: Row(
+        children: <Widget>[
+          Text(
+            "$title",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+                fontSize: Utilities.vScale(30.0, context),
+                color: (event['active']==1)?MaterialColor(0xFF114546, darkSeaGreenColorCodes):MaterialColor(0xFF14a098, seaGreenColorCodes)
+            ),
+          )
+        ],
       ),
-      Positioned(
-        left: 0,
-        bottom: Utilities.vScale(10,context),
-        child: Text(
-          "",
-          style: TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: Utilities.vScale(30.0, context),
-              color: (event['active']==1)?MaterialColor(0xFF114546, darkSeaGreenColorCodes):MaterialColor(0xFF14a098, seaGreenColorCodes)
-          ),
-        ),
-      ),
-      Positioned(
-        right: 0,
-        top: Utilities.vScale(10,context),
-        child: Text(
-          "",
-          style: TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: Utilities.vScale(30.0, context),
-              color: (event['active']==1)?MaterialColor(0xFF114546, darkSeaGreenColorCodes):MaterialColor(0xFF14a098, seaGreenColorCodes)
-          ),
-        ),
-      )
-    ];
+    );
+  }
 
+  Widget _buildTime(BuildContext context, dynamic event){
+    int time = event['startTime'];
+    int hh = (time/100).floor();
+    int mm = time - hh*100;
+    hh = hh%12;
+    hh = (hh==0)?12:hh;
+    String ampm = (time>=1200)?"PM":"AM";
+    return Text(
+      "${(hh%10==hh)?"0$hh":"$hh"}:${(mm%10==mm)?"0$mm":"$mm"}\n$ampm",
+      textAlign: TextAlign.center,
+      style: TextStyle(
+          fontFamily: 'Poppins',
+          fontWeight: FontWeight.bold,
+          fontSize: Utilities.vScale(22.0, context),
+          color: (event['active']==1)?MaterialColor(0xFF114546, darkSeaGreenColorCodes):MaterialColor(0xFF14a098, seaGreenColorCodes)
+      ),
+    );
+  }
+
+  Widget _buildDescription(BuildContext context, dynamic event){
+    return Text(
+      "${event['eventDesc']}",
+      style: TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: Utilities.vScale(18.0, context),
+          color: (event['active']==1)?MaterialColor(0xFF114546, darkSeaGreenColorCodes):MaterialColor(0xFF14a098, seaGreenColorCodes)
+      ),
+    );
+  }
+
+  Widget _buildDuration(BuildContext context, dynamic event){
+    int hh = event['duration'].floor();
+    int mm = ((event['duration'] - hh)*100).floor();
+    String dur = "${(hh==0)?"":(hh==1)?"1 hour ":"$hh hours "} ${(mm==0)?"":(mm==1)?"1 minute":"$mm minutes"}";
+    return Text(
+      "Duration: $dur",
+      style: TextStyle(
+          fontFamily: 'Poppins',
+          fontWeight: FontWeight.bold,
+          fontSize: Utilities.vScale(18.0, context),
+          color: (event['active']==1)?MaterialColor(0xFF114546, darkSeaGreenColorCodes):MaterialColor(0xFF14a098, seaGreenColorCodes)
+      ),
+    );
+  }
+
+  Widget eventTile(BuildContext context, dynamic event, int elemId){
     return SizedBox(
         width: Utilities.scale(MediaQuery.of(context).size.width,context),
-        height: Utilities.vScale(100,context),
+//        height: Utilities.vScale(100,context),
+
         child: DecoratedBox(
           decoration: BoxDecoration(
               color: (event['active']==1)?MaterialColor(0xFF14a098, seaGreenColorCodes):MaterialColor(0xFF114546, darkSeaGreenColorCodes),
               borderRadius: BorderRadius.circular(Utilities.scale(7.5,context))
           ),
           child: OutlineButton(
-            onPressed: () {
-            },
-            child: Stack(
-                children:positionedWidgets
+            onPressed: () {},
+            child: ExpansionTile(
+              title: _buildTitle(context, event),
+              trailing: _buildTime(context, event),
+              children: <Widget>[
+                Padding(padding: EdgeInsets.only(top: Utilities.vScale(7,context))),
+                _buildDescription(context, event),
+                Padding(padding: EdgeInsets.only(top: Utilities.vScale(7,context))),
+                _buildDuration(context, event),
+                Padding(padding: EdgeInsets.only(top: Utilities.vScale(7,context))),
+              ],
+              onExpansionChanged: (bool isExpanded) {
+                setState(() {
+                  this.events[elemId]['active']=(this.events[elemId]['active']==1)?0:1;
+                });
+              },
             ),
             borderSide: BorderSide(
                 color: (event['active']==1)?MaterialColor(0xFF114546, darkSeaGreenColorCodes):MaterialColor(0xFF14a098, seaGreenColorCodes),
@@ -116,7 +172,7 @@ class EventsOnDayState extends State<EventsOnDay> {
     ];
     for(var i=0; i<((events!=null)?events.length:0); i++){
       scheduleContents.add(Padding(padding: EdgeInsets.only(top: Utilities.vScale((i==0)?30:13,context))));
-      scheduleContents.add(eventTile(context, events[i]));
+      scheduleContents.add(eventTile(context, events[i],i));
     }
     return Scaffold(
         backgroundColor: MaterialColor(0xff262833, darkSeaGreenColorCodes),

@@ -3,6 +3,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:induction/EventsOnDay.dart';
 import 'package:induction/Utilities.dart';
 import 'ColorCodes.dart';
 import 'Schedule.dart';
@@ -10,6 +11,8 @@ import 'Schedule.dart';
 class ScheduleState extends State<Schedule> {
   List<dynamic> schedule;
   List<String> days;
+
+  String userGroup;
 
   FirebaseDatabase scheduleDB;
   DatabaseReference scheduleDBRef;
@@ -22,7 +25,20 @@ class ScheduleState extends State<Schedule> {
       });
     }
     getScheduleFromDB();
+    getValFromDB();
     super.initState();
+  }
+
+  void getValFromDB() async{
+    FirebaseDatabase userDB = FirebaseDatabase(databaseURL: DotEnv().env['DB_URL']);
+    DatabaseReference userDataRef= userDB.reference().child('users/${widget.user.uid}');
+    DataSnapshot data = await userDataRef.once();
+    dynamic dataValues = data.value;
+    if(mounted){
+      setState(() {
+        userGroup = dataValues['groupCode'];
+      });
+    }
   }
 
   void getScheduleFromDB() async{
@@ -100,6 +116,15 @@ class ScheduleState extends State<Schedule> {
         ),
         child: OutlineButton(
           onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => EventsOnDay(
+                    schedule: this.schedule,
+                    userGroup: this.userGroup,
+                    day: this.days[dayNum-1].split(' ')[0],
+                    dayNum: dayNum
+                ))
+            );
           },
           child: Stack(
               children:positionedWidgets

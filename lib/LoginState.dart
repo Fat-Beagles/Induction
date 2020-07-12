@@ -87,16 +87,16 @@ class LoginState extends State<Login>{
   @override
   Widget build(BuildContext context){
     return Scaffold(
-        appBar: AppBar(
-          title: Center(
-              child: Text(
-                "SIGN IN",
-                style: TextStyle(
-                  fontSize: Utilities.vScale(25,context),
-                  color: MaterialColor(0xFFcdcdcd, greyColorCodes),
-                ),
-              )),
-        ),
+//        appBar: AppBar(
+//          title: Center(
+//              child: Text(
+//                "SIGN IN",
+//                style: TextStyle(
+//                  fontSize: Utilities.vScale(25,context),
+//                  color: MaterialColor(0xFFcdcdcd, greyColorCodes),
+//                ),
+//              )),
+//        ),
         body: Container (
             padding: EdgeInsets.only(top: Utilities.vScale(30.0,context), bottom: Utilities.vScale(30,context), left: Utilities.scale(30,context), right: Utilities.scale(30,context)),
             color: MaterialColor(0xFF114546, darkSeaGreenColorCodes),
@@ -192,7 +192,7 @@ class LoginState extends State<Login>{
                       Padding(padding: EdgeInsets.only(top: Utilities.vScale(10.0,context))),
                       SizedBox(
                         width: Utilities.scale(MediaQuery.of(context).size.width,context),
-                        height: Utilities.vScale(MediaQuery.of(context).size.height,context)/12,
+                        height: Utilities.vScale(MediaQuery.of(context).size.height,context)/14,
                         child: RaisedButton(
                           onPressed: () {
                             String email=emailController.text;
