@@ -91,9 +91,12 @@ class EditProfileState extends State<EditProfile> {
       if(profileImage!=null){
         StorageReference ref = await uploadPicture();
         String url = await ref.getDownloadURL();
-        setState(() {
-          newPhotoUrl = url;
-        });
+        print(url);
+        if(mounted){
+          setState(() {
+            newPhotoUrl = url;
+          });
+        }
         newInfo.photoUrl = newPhotoUrl;
       }
       if(displayName.replaceAll(' ', '').length!=0){

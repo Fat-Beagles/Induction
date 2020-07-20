@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'ProfileState.dart';
 
 class Profile extends StatefulWidget {
-  Profile({Key key, this.user}) : super(key: key);
+  Profile({Key key, this.curUser, this.searchUser}) : super(key: key);
 
-  final FirebaseUser user;
+  final FirebaseUser curUser;
+  final dynamic searchUser;
 
   @override
   ProfileState createState() => ProfileState();

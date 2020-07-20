@@ -24,19 +24,19 @@ class Utilities {
     String month = "";
     switch(x){
       case 1: {
-        month="JANUARY";
+        month="JAN";
       }
       break;
       case 2: {
-        month="FEBRUARY";
+        month="FEB";
       }
       break;
       case 3: {
-        month="MARCH";
+        month="MAR";
       }
       break;
       case 4: {
-        month="APRIL";
+        month="APR";
       }
       break;
       case 5: {
@@ -52,23 +52,23 @@ class Utilities {
       }
       break;
       case 8: {
-        month="AUGUST";
+        month="AUG";
       }
       break;
       case 9: {
-        month="SEPTEMBER";
+        month="SEPT";
       }
       break;
       case 10: {
-        month="OCTOBER";
+        month="OCT";
       }
       break;
       case 11: {
-        month="NOVEMBER";
+        month="NOV";
       }
       break;
       case 12: {
-        month="DECEMBER";
+        month="DEC";
       }
       break;
     }
@@ -154,5 +154,28 @@ class Utilities {
         }
       }
     }
+  }
+
+  static MaterialColor getGroupColor(String color){
+    MaterialColor colorToReturn;
+    switch(color.toLowerCase()){
+      case "red": {
+        colorToReturn = Colors.red;
+      }
+      break;
+      case "blue": {
+        colorToReturn = Colors.blue;
+      }
+      break;
+      case "green": {
+        colorToReturn = Colors.green;
+      }
+      break;
+      case "black": {
+        colorToReturn = Colors.black;
+      }
+      break;
+    }
+    return colorToReturn;
   }
 }

@@ -24,25 +24,41 @@ class ProfileState extends State<Profile> {
   FirebaseStorage storage;
   FirebaseDatabase userDB;
   DatabaseReference userDataRef;
-  FirebaseUser user;
+  dynamic user;
+  int activeUser=0;
 
   @override
   void initState(){
     if(mounted){
       setState(() {
         storage = FirebaseStorage(storageBucket: DotEnv().env['STORAGE_URL']);
-        user = widget.user;
-        displayName = user.displayName;
-        email = user.email;
-        photoUrl = user.photoUrl;
-        photoUrl = photoUrl==null?DotEnv().env['DEF_IMAGE']:photoUrl;
-        print(photoUrl);
-        uid = user.uid;
-        userDB = FirebaseDatabase(databaseURL: DotEnv().env['DB_URL']);
-        userDataRef= userDB.reference().child('users/$uid');//.child('uid');
+        if(widget.curUser!=null){
+          user = widget.curUser;
+          displayName = user.displayName;
+          email = user.email;
+          photoUrl = user.photoUrl;
+          photoUrl = photoUrl==null?DotEnv().env['DEF_IMAGE']:photoUrl;
+          uid = user.uid;
+          userDB = FirebaseDatabase(databaseURL: DotEnv().env['DB_URL']);
+          userDataRef= userDB.reference().child('users/$uid');//.child('uid');
+          activeUser = 1;
+        }
+        else{
+          user = widget.searchUser;
+          displayName = user['name'];
+          email = user['email'];
+          photoUrl = user['photoUrl'];
+          photoUrl = photoUrl==null?DotEnv().env['DEF_IMAGE']:photoUrl;
+          groupColor = user['groupCode'];
+          ringColor = Utilities.getGroupColor(groupColor);
+          bio = user['bio'];
+          instagram = user['instaHandle'];
+        }
       });
     }
-    getValFromDB();
+    if(activeUser==1) {
+      getValFromDB();
+    }
     super.initState();
   }
 
@@ -167,7 +183,7 @@ class ProfileState extends State<Profile> {
                         image: NetworkImage(photoUrl)
                     )
                 ),
-                child: FlatButton(
+                child: (activeUser==1)?FlatButton(
                   onPressed: () => {
                     Navigator.push(
                       context,
@@ -181,84 +197,91 @@ class ProfileState extends State<Profile> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(Utilities.getRoundImageSize(335, context)/2)
                   ),
-                ),
+                ):null,
               ),
             ),
             Positioned(
-              right: Utilities.getRoundImageSize(-25, context),
+              right: Utilities.getRoundImageSize(0, context),
               top: Utilities.getRoundImageSize(400, context),
               child: SizedBox(
                 height: Utilities.vScale(50, context),
-                width: Utilities.scale(320, context),
+                width: Utilities.scale(295, context),
                 child: DecoratedBox(    //Add user name.
                   decoration: BoxDecoration(
                     color:  MaterialColor(0xff501f3a, darkMagentaColorCodes),
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(Utilities.scale(10, context)), topRight: Radius.circular(Utilities.scale(10, context)) ),
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(Utilities.scale(10, context))),
                   ),
-                  child: Center(
+                  child: SizedBox(
+                    width: Utilities.scale(280, context),
+                    child: Center(
                       child: Text(
-                          displayName==null?'':displayName,
-                          style: TextStyle(
-                            fontSize: Utilities.vScale(30, context),
-                            color: Colors.white,
-                          ),
-                      )),
+                        displayName==null?'':displayName,
+                        style: TextStyle(
+                          fontSize: Utilities.vScale(30, context),
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
             Positioned(
-              right:Utilities.getRoundImageSize(-25, context),
+              right:Utilities.getRoundImageSize(0, context),
               top: Utilities.getRoundImageSize(450,context),
               child: SizedBox(
 //                height: Utilities.vScale(250, context),
-                width: Utilities.scale(320, context),
+                width: Utilities.scale(295, context),
                 child: DecoratedBox(    //Add user info (branch, group, instagram handle)
                   decoration: BoxDecoration(
                     color:  MaterialColor(0xffcb2d6f, magentaColorCodes),
-                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(Utilities.scale(10, context)), bottomRight: Radius.circular(Utilities.scale(10, context)) ),
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(Utilities.scale(10, context))),
                   ),
                   child: Center(
-                    child: Column(
-                      children: <Widget>[
-                        Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
-                        Text(
-                          "$bio",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: Utilities.vScale(25, context),
-                              color: Colors.white
+                    child: SizedBox(
+                      width: Utilities.scale(280, context),
+                      child: Column(
+                        children: <Widget>[
+                          Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
+                          Text(
+                            "${(bio!=null)?bio:''}",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: Utilities.vScale(25, context),
+                                color: Colors.white
+                            ),
                           ),
-                        ),
-                        Padding(padding: EdgeInsets.only(top: Utilities.vScale(10, context))),
-                        Text(
-                          "~ From $branch",
+                          Padding(padding: EdgeInsets.only(top: Utilities.vScale(10, context))),
+                          Text(
+                            "~ From ${(branch!='' && branch!=null)?branch:'somewhere'}",
 //                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: Utilities.vScale(18, context),
-                              color: Colors.white
-                          ),
-                        ),
-                        Padding(padding: EdgeInsets.only(top: Utilities.vScale(8, context))),
-                        SizedBox(
-                          height: Utilities.vScale(40, context),
-                          width: Utilities.scale(MediaQuery.of(context).size.width - 100, context),
-                          child: FlatButton(
-                            onPressed: openIg,
-                            child: Text(
-                                '${(instagram=='')?'':'Instagram: $instagram'}',
-                                style: TextStyle(
-                                  fontSize: Utilities.vScale(22,context),
-                                  color: MaterialColor(0xFFcdcdcd, greyColorCodes),
-                                )
-                            ),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(Utilities.scale(25.0,context))
+                            style: TextStyle(
+                                fontSize: Utilities.vScale(18, context),
+                                color: Colors.white
                             ),
                           ),
-                        ),
-                        Padding(padding: EdgeInsets.only(top: Utilities.vScale(7, context))),
-                      ],
-                    )
+                          Padding(padding: EdgeInsets.only(top: Utilities.vScale(8, context))),
+                          SizedBox(
+                            height: Utilities.vScale(40, context),
+                            width: Utilities.scale(MediaQuery.of(context).size.width - 100, context),
+                            child: (instagram=='' || instagram==null)?null:FlatButton(
+                              onPressed: openIg,
+                              child: Text(
+                                  'Instagram: $instagram',
+                                  style: TextStyle(
+                                    fontSize: Utilities.vScale(22,context),
+                                    color: MaterialColor(0xFFcdcdcd, greyColorCodes),
+                                  )
+                              ),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(Utilities.scale(25.0,context))
+                              ),
+                            ),
+                          ),
+                          Padding(padding: EdgeInsets.only(top: Utilities.vScale(7, context))),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),

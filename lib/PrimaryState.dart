@@ -70,7 +70,7 @@ class PrimaryState extends State<Primary> {
           user: widget.user
         ),
         Profile(
-            user: widget.user
+            curUser: widget.user
         ),
       ],
     );
