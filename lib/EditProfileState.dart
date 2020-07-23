@@ -91,7 +91,6 @@ class EditProfileState extends State<EditProfile> {
       if(profileImage!=null){
         StorageReference ref = await uploadPicture();
         String url = await ref.getDownloadURL();
-        print(url);
         if(mounted){
           setState(() {
             newPhotoUrl = url;

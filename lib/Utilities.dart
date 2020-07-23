@@ -157,24 +157,29 @@ class Utilities {
   }
 
   static MaterialColor getGroupColor(String color){
-    MaterialColor colorToReturn;
-    switch(color.toLowerCase()){
-      case "red": {
-        colorToReturn = Colors.red;
+    MaterialColor colorToReturn = Colors.grey;
+    try{
+      switch(color.toLowerCase()){
+        case "red": {
+          colorToReturn = Colors.red;
+        }
+        break;
+        case "blue": {
+          colorToReturn = Colors.blue;
+        }
+        break;
+        case "green": {
+          colorToReturn = Colors.green;
+        }
+        break;
+        case "black": {
+          colorToReturn = Colors.black;
+        }
+        break;
       }
-      break;
-      case "blue": {
-        colorToReturn = Colors.blue;
-      }
-      break;
-      case "green": {
-        colorToReturn = Colors.green;
-      }
-      break;
-      case "black": {
-        colorToReturn = Colors.black;
-      }
-      break;
+    }
+    finally {
+      // Do nothing. Just to check if color is a string.
     }
     return colorToReturn;
   }

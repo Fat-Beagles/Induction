@@ -77,7 +77,7 @@ class SearchUsersState extends State<SearchUsers> {
               color: MaterialColor(0xff262833, darkSeaGreenColorCodes),
               borderRadius: BorderRadius.circular(Utilities.getRoundImageSize(355, context)/2),
               border: Border.all(
-                  color: Utilities.getGroupColor(user['groupCode']), //Border color same as the group color.
+                  color: Utilities.getGroupColor(user['groupCode'].toString()), //Border color same as the group color.
                   width: Utilities.scale(5,context)
               ),
             ),

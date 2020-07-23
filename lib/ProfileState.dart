@@ -50,7 +50,7 @@ class ProfileState extends State<Profile> {
           photoUrl = user['photoUrl'];
           photoUrl = photoUrl==null?DotEnv().env['DEF_IMAGE']:photoUrl;
           groupColor = user['groupCode'];
-          ringColor = Utilities.getGroupColor(groupColor);
+          ringColor = Utilities.getGroupColor(groupColor.toString());
           bio = user['bio'];
           instagram = user['instaHandle'];
         }
