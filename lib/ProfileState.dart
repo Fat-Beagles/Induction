@@ -19,6 +19,7 @@ class ProfileState extends State<Profile> {
   String branch='';
   String bio='';
   dynamic groupColor='';
+  bool isVerified=false;
   MaterialColor ringColor;
   String instagram='';
   FirebaseStorage storage;
@@ -52,6 +53,7 @@ class ProfileState extends State<Profile> {
           groupColor = user['groupCode'];
           ringColor = Utilities.getGroupColor(groupColor.toString());
           bio = user['bio'];
+          isVerified = user['isVerified'];
           instagram = user['instaHandle'];
         }
       });
@@ -83,13 +85,15 @@ class ProfileState extends State<Profile> {
   void getValFromDB() async{
     DataSnapshot data = await userDataRef.once();
     dynamic dataValues = data.value;
+    print(dataValues);
     if(mounted){
       setState(() {
         branch = dataValues['branch'];
         groupColor = dataValues['groupCode'];
-        ringColor = (groupColor=='Green')?Colors.green:Colors.blue;
+        ringColor = Utilities.getGroupColor(dataValues['groupCode']);
         bio = dataValues['bio'];
         instagram = dataValues['instaHandle'];
+        isVerified = dataValues['isVerified'];
       });
     }
   }
@@ -253,7 +257,7 @@ class ProfileState extends State<Profile> {
                           ),
                           Padding(padding: EdgeInsets.only(top: Utilities.vScale(10, context))),
                           Text(
-                            "~ From ${(branch!='' && branch!=null)?branch:'somewhere'}",
+                            (isVerified)?"~ Maintainer":"~ From ${(branch!='' && branch!=null)?branch:'somewhere'}",
 //                          textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: Utilities.vScale(18, context),

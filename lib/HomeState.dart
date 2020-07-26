@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:induction/About.dart';
 import 'package:induction/Gallery.dart';
 import 'package:induction/Utilities.dart';
 import 'ColorCodes.dart';
@@ -31,8 +32,8 @@ class HomeState extends State<Home> {
         aboutURL = aboutTemp.value;
         if(galleryTemp.value!=null){
           galleryURL = galleryTemp.value.values.toList();
-          print(galleryURL);
-          galleryURL = galleryURL[galleryURL.length-1]['url'];
+          galleryURL.sort((a,b) => Utilities.compareTime(a, b));
+          galleryURL = galleryURL[0]['url'];
         }
         else{
           galleryURL = aboutURL;
@@ -86,14 +87,9 @@ class HomeState extends State<Home> {
           ],
         ),
         onPressed: () => {
-//                          Navigator.push(
-//                              context,
-//                              MaterialPageRoute(builder: (context) => EditProfile(
-//                                user: user,
-//                                bio: bio,
-//                                instagram: instagram,
-//                                ringColor: ringColor,
-//                              ))).then((value) => reloadUser())
+          Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => About()))
         },
       ),
     );
@@ -213,8 +209,8 @@ class HomeState extends State<Home> {
                   children: <Widget>[
                     Image.asset('assets/images/logoFullNoShadow.png', width:Utilities.scale(MediaQuery.of(context).size.width/2,context), height: Utilities.vScale((MediaQuery.of(context).size.width/2),context)/2.41, color: MaterialColor(0xcccb2d6f, magentaColorCodes),),
                     Padding(padding: EdgeInsets.only(top: Utilities.vScale(20, context)),),
-                    upNext(context),
-                    Padding(padding: EdgeInsets.only(top: Utilities.vScale(10, context)),),
+//                    upNext(context),
+//                    Padding(padding: EdgeInsets.only(top: Utilities.vScale(10, context)),),
                     gallery(context),
                     Padding(padding: EdgeInsets.only(top: Utilities.vScale(10, context)),),
                     about(context)

@@ -33,7 +33,7 @@ class GalleryState extends State<Gallery> {
   }
 
   void getGalleryItemsFromSnapshot(){
-    if(galleryItemsSnapshot.value == null || galleryItemsSnapshot.value.length==0){
+    if(galleryItemsSnapshot==null || galleryItemsSnapshot.value == null || galleryItemsSnapshot.value.length==0){
       setState(() {
         galleryItems = null;
       });
@@ -41,6 +41,7 @@ class GalleryState extends State<Gallery> {
     else{
       setState(() {
         galleryItems = galleryItemsSnapshot.value.values.toList();
+        galleryItems.sort((a,b) => Utilities.compareTime(a,b));
         if(galleryItems.length!=0){
           caption = galleryItems[0]['caption'];
         }
@@ -120,41 +121,41 @@ class GalleryState extends State<Gallery> {
         ],
       ),
     );
-    return Container(
-      child: PhotoViewGallery(
-        pageOptions: <PhotoViewGalleryPageOptions>[
-          PhotoViewGalleryPageOptions(
-              imageProvider: AssetImage("assets/images/def_user.png"),
-              heroAttributes: const PhotoViewHeroAttributes(tag: "tag1"),
-              minScale: PhotoViewComputedScale.contained
-          ),
-          PhotoViewGalleryPageOptions(
-              imageProvider: AssetImage("assets/images/background.png"),
-              heroAttributes: const PhotoViewHeroAttributes(tag: "tag2"),
-              minScale: PhotoViewComputedScale.contained
-          ),
-          PhotoViewGalleryPageOptions(
-              imageProvider: AssetImage("assets/images/logoFullNoShadow.png"),
-              heroAttributes: const PhotoViewHeroAttributes(tag: "tag3"),
-              minScale: PhotoViewComputedScale.contained
-          ),
-        ],
-//        loadingBuilder: (context, progress) => Center(
-//          child: Container(
-//            width: 20.0,
-//            height: 20.0,
-//            child: CircularProgressIndicator(
-//              value: _progress == null
-//                  ? null
-//                  : _progress.cumulativeBytesLoaded /
-//                  _progress.expectedTotalBytes,
-//            ),
+//    return Container(
+//      child: PhotoViewGallery(
+//        pageOptions: <PhotoViewGalleryPageOptions>[
+//          PhotoViewGalleryPageOptions(
+//              imageProvider: AssetImage("assets/images/def_user.png"),
+//              heroAttributes: const PhotoViewHeroAttributes(tag: "tag1"),
+//              minScale: PhotoViewComputedScale.contained
 //          ),
-//        ),
-//        backgroundDecoration: widget.backgroundDecoration,
-        pageController: pageController,
-//        onPageChanged: onPageChanged,
-      )
-    );
+//          PhotoViewGalleryPageOptions(
+//              imageProvider: AssetImage("assets/images/background.png"),
+//              heroAttributes: const PhotoViewHeroAttributes(tag: "tag2"),
+//              minScale: PhotoViewComputedScale.contained
+//          ),
+//          PhotoViewGalleryPageOptions(
+//              imageProvider: AssetImage("assets/images/logoFullNoShadow.png"),
+//              heroAttributes: const PhotoViewHeroAttributes(tag: "tag3"),
+//              minScale: PhotoViewComputedScale.contained
+//          ),
+//        ],
+////        loadingBuilder: (context, progress) => Center(
+////          child: Container(
+////            width: 20.0,
+////            height: 20.0,
+////            child: CircularProgressIndicator(
+////              value: _progress == null
+////                  ? null
+////                  : _progress.cumulativeBytesLoaded /
+////                  _progress.expectedTotalBytes,
+////            ),
+////          ),
+////        ),
+////        backgroundDecoration: widget.backgroundDecoration,
+//        pageController: pageController,
+////        onPageChanged: onPageChanged,
+//      )
+//    );
   }
 }

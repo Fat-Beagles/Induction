@@ -126,9 +126,9 @@ class Utilities {
 
   static int compareDays(String a, String b){
     List<String> dateA = a.split('-');
-    int yearA = int.parse(dateA[2].split(' ')[1]);
+    int yearA = int.parse(dateA[2].split(' ')[0]);
     List<String> dateB = b.split('-');
-    int yearB = int.parse(dateB[2].split(' ')[1]);
+    int yearB = int.parse(dateB[2].split(' ')[0]);
     if(yearA<yearB){
       return -1;
     }
@@ -154,6 +154,24 @@ class Utilities {
         }
       }
     }
+  }
+
+  static int compareTime(dynamic a, dynamic b){
+    int aTime = a['time'];
+    int bTime = b['time'];
+    if(aTime<bTime){
+      return 1;
+    }
+    else if(aTime==bTime){
+      return 0;
+    }
+    else{
+      return -1;
+    }
+  }
+
+  static int compareNames(dynamic a, dynamic b){
+    return a['name'].compareTo(b['name']);
   }
 
   static MaterialColor getGroupColor(String color){

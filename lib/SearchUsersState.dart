@@ -44,6 +44,7 @@ class SearchUsersState extends State<SearchUsers> {
             setState(() {
               allUsers.add(values[k]);
             });
+            allUsers.sort((a,b) => Utilities.compareNames(a,b));
           }
         }
       }

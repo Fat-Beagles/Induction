@@ -2,8 +2,10 @@ import 'package:firebase_database/firebase_database.dart';
 //import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_parsed_text/flutter_parsed_text.dart';
 import 'package:induction/EventsOnDay.dart';
 import 'package:induction/Utilities.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'ColorCodes.dart';
 
 class EventsOnDayState extends State<EventsOnDay> {
@@ -52,8 +54,9 @@ class EventsOnDayState extends State<EventsOnDay> {
       title= event['eventName'];
     }
     return SizedBox(
-      height: Utilities.vScale(80,context),
+      height: Utilities.vScale(70,context),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
             "$title",
@@ -61,7 +64,7 @@ class EventsOnDayState extends State<EventsOnDay> {
             style: TextStyle(
                 fontFamily: 'Poppins',
                 fontWeight: FontWeight.w600,
-                fontSize: Utilities.vScale(30.0, context),
+                fontSize: Utilities.vScale(22.0, context),
                 color: (event['active']==1)?MaterialColor(0xFF114546, darkSeaGreenColorCodes):MaterialColor(0xFF14a098, seaGreenColorCodes)
             ),
           )
@@ -90,6 +93,47 @@ class EventsOnDayState extends State<EventsOnDay> {
   }
 
   Widget _buildDescription(BuildContext context, dynamic event){
+    return ParsedText(
+      text: "${event['eventDesc']}",
+      parse: <MatchText> [
+        MatchText(
+          type: ParsedType.URL,
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            color: Colors.indigoAccent,
+            fontSize: Utilities.vScale(18,context),
+          ),
+          onTap: (url) async {
+            if(await(canLaunch(url))){
+              launch(url);
+            }
+            else{
+              return showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                        content: Text("Cannot open URL"),
+                        actions: <Widget>[
+                          FlatButton(
+                            child: new Text("Okay"),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          )
+                        ]
+                    );
+                  }
+              );
+            }
+          }
+        ),
+      ],
+      style: TextStyle(
+        fontFamily: 'Poppins',
+        fontSize: Utilities.vScale(18, context),
+        color: (event['active']==1)?MaterialColor(0xFF114546, darkSeaGreenColorCodes):MaterialColor(0xFF14a098, seaGreenColorCodes),
+      ),
+    );
     return Text(
       "${event['eventDesc']}",
       style: TextStyle(

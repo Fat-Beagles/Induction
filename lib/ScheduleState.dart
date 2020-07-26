@@ -36,7 +36,11 @@ class ScheduleState extends State<Schedule> {
     dynamic dataValues = data.value;
     if(mounted){
       setState(() {
-        userGroup = dataValues['groupCode'];
+        try{
+          userGroup = dataValues['groupCode'];
+        } catch(e){
+          userGroup = 'white';
+        }
       });
     }
   }
@@ -75,7 +79,7 @@ class ScheduleState extends State<Schedule> {
           "$day $mm,",
           style: TextStyle(
               fontFamily: 'Poppins',
-              fontSize: Utilities.vScale(30.0, context),
+              fontSize: Utilities.vScale(22.0, context),
               color: (active==1)?MaterialColor(0xFF114546, darkSeaGreenColorCodes):MaterialColor(0xFF14a098, seaGreenColorCodes)
           ),
         ),
@@ -87,7 +91,7 @@ class ScheduleState extends State<Schedule> {
           "$wdd",
           style: TextStyle(
               fontFamily: 'Poppins',
-              fontSize: Utilities.vScale(30.0, context),
+              fontSize: Utilities.vScale(22.0, context),
               color: (active==1)?MaterialColor(0xFF114546, darkSeaGreenColorCodes):MaterialColor(0xFF14a098, seaGreenColorCodes)
           ),
         ),
@@ -99,7 +103,7 @@ class ScheduleState extends State<Schedule> {
           "DAY $dayNum",
           style: TextStyle(
               fontFamily: 'Poppins',
-              fontSize: Utilities.vScale(30.0, context),
+              fontSize: Utilities.vScale(22.0, context),
               color: (active==1)?MaterialColor(0xFF114546, darkSeaGreenColorCodes):MaterialColor(0xFF14a098, seaGreenColorCodes)
           ),
         ),
@@ -108,7 +112,7 @@ class ScheduleState extends State<Schedule> {
 
     return SizedBox(
       width: Utilities.scale(MediaQuery.of(context).size.width,context),
-      height: Utilities.vScale(100,context),
+      height: Utilities.vScale(80,context),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: (active==1)?MaterialColor(0xFF14a098, seaGreenColorCodes):MaterialColor(0xFF114546, darkSeaGreenColorCodes),

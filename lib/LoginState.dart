@@ -4,6 +4,7 @@ import 'Primary.dart';
 import "ColorCodes.dart";
 import 'Login.dart';
 import 'Brochure.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginState extends State<Login>{
@@ -26,6 +27,7 @@ class LoginState extends State<Login>{
       });
       return user!=null;
     } catch(e){
+      print(e);
       return e.message;
     }
   }

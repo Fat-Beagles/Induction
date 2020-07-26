@@ -8,36 +8,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:676495080890:android:a88211a267addd5cf8b183",
-        "android_client_info": {
-          "package_name": "com.example.induction2020"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "676495080890-lr0nh0qn0akmh759nttqnfurjjkpc2i5.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAgIt-qd7Bn0DTA9SNj-oLJihVNcEvn_x8"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "676495080890-lr0nh0qn0akmh759nttqnfurjjkpc2i5.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:676495080890:android:a8c26230ee595ecaf8b183",
+        "mobilesdk_app_id": "1:676495080890:android:6389a3155369ddcff8b183",
         "android_client_info": {
           "package_name": "com.fatbeagles.induction"
         }
