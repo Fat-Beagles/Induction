@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:induction/Utilities.dart';
 import 'ColorCodes.dart';
 
@@ -87,7 +88,7 @@ class AppInfo extends StatelessWidget {
                             child: Column(
                               children: <Widget>[
                                 Padding(padding: EdgeInsets.only(top: Utilities.vScale(35, context))),
-                                getRow("Version", "v1.0", context),
+                                getRow("Version", DotEnv().env['APP_VER'], context),
                                 Padding(padding: EdgeInsets.only(top: Utilities.vScale(20, context))),
                                 getRow("Designed By", "Yatharth Taneja", context),
                                 Padding(padding: EdgeInsets.only(top: Utilities.vScale(20, context))),

@@ -19,21 +19,25 @@ class EditProfileState extends State<EditProfile> {
   String newPhotoUrl='';
   String uid='';
   String instagram='';
+  String linkedin='';
   String bio='';
   FirebaseStorage storage;
   FirebaseDatabase userDB;
   DatabaseReference userDataRef;
   File profileImage;
+  int timeSaved;
   final emailController = TextEditingController();
   final bioController = TextEditingController();
   final igController = TextEditingController();
   final nameController = TextEditingController();
+  final linkedinController = TextEditingController();
 
   @override
   void initState(){
     if(mounted){
       setState(() {
         instagram = widget.instagram;
+        linkedin = widget.linkedin;
         bio = widget.bio;
         storage = FirebaseStorage(storageBucket: DotEnv().env['STORAGE_URL']);
         displayName = widget.user.displayName;
@@ -46,6 +50,7 @@ class EditProfileState extends State<EditProfile> {
         userDataRef= userDB.reference().child('users/$uid');//.child('uid');
         emailController.text = email;
         igController.text = instagram;
+        linkedinController.text = linkedin;
         bioController.text = bio;
         nameController.text = displayName;
       });
@@ -61,6 +66,18 @@ class EditProfileState extends State<EditProfile> {
   }
 
   Future<void> applyChanges() async{
+    setState(() {
+      timeSaved = new DateTime.now().millisecondsSinceEpoch;
+    });
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+              title: Text("Updating"),
+              content: Text("Please Wait ..."),
+          );
+        }
+    );
     try{
       await widget.user.updateEmail(email);
     }
@@ -128,6 +145,7 @@ class EditProfileState extends State<EditProfile> {
       await userDataRef.child('name').set(displayName);
       await userDataRef.child('bio').set(bio);
       await userDataRef.child('instaHandle').set(instagram);
+      await userDataRef.child('linkedin').set(linkedin);
     }
     catch(e){
       return showDialog(
@@ -370,6 +388,30 @@ class EditProfileState extends State<EditProfile> {
                                   ),
                                 ),
                                 Padding(padding: EdgeInsets.only(top: Utilities.vScale(10, context))),
+                                Center(
+                                  child: TextFormField(
+                                    controller: linkedinController,
+                                    cursorColor: MaterialColor(0xFFcdcdcd, greyColorCodes),
+                                    autocorrect: true,
+                                    decoration: InputDecoration(
+                                      labelText: "LinkedIn",
+                                      labelStyle: TextStyle(color: MaterialColor(0xFFcdcdcd, greyColorCodes)),
+                                      hintText: "Enter LinkedIn profile URL",
+                                      hintStyle: TextStyle(color: MaterialColor(0x88cdcdcd, greyColorCodes)),
+                                      fillColor: MaterialColor(0xFFcdcdcd, greyColorCodes),
+                                      enabledBorder: InputBorder.none,
+                                      focusedBorder: InputBorder.none,
+                                    ),
+                                    keyboardType: TextInputType.multiline,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        color: MaterialColor(0xcccdcdcd, greyColorCodes),
+                                        fontFamily: "Poppins",
+                                        fontSize: Utilities.vScale(20, context)
+                                    ),
+                                  ),
+                                ),
+                                Padding(padding: EdgeInsets.only(top: Utilities.vScale(10, context))),
                               ],
                             ),
                           )
@@ -394,11 +436,12 @@ class EditProfileState extends State<EditProfile> {
                             bio = bioController.text;
                             instagram = igController.text;
                             displayName = nameController.text;
+                            linkedin = linkedinController.text;
                           });
                           applyChanges();
                         },
                         child: Text(
-                            'Apply Changes',
+                            'Save',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: Utilities.vScale(22,context),

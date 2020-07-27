@@ -18,6 +18,7 @@ class ProfileState extends State<Profile> {
   String uid='';
   String branch='';
   String bio='';
+  String linkedin='';
   dynamic groupColor='';
   bool isVerified=false;
   MaterialColor ringColor;
@@ -55,6 +56,7 @@ class ProfileState extends State<Profile> {
           bio = user['bio'];
           isVerified = user['isVerified'];
           instagram = user['instaHandle'];
+          linkedin = user['linkedin'];
         }
       });
     }
@@ -93,12 +95,13 @@ class ProfileState extends State<Profile> {
         ringColor = Utilities.getGroupColor(dataValues['groupCode']);
         bio = dataValues['bio'];
         instagram = dataValues['instaHandle'];
+        linkedin = dataValues['linkedin'];
         isVerified = dataValues['isVerified'];
       });
     }
   }
 
-  void openIg() async{
+  void openig() async{
     var url = 'https://www.instagram.com/${instagram.replaceAll('@', '')}';
     if(await canLaunch(url)) {
       await launch(url, universalLinksOnly: true);
@@ -108,6 +111,31 @@ class ProfileState extends State<Profile> {
           builder: (context) {
             return AlertDialog(
                 title: Text("Failed to open Instagram"),
+                content: Text("Please try again later. If still failing, please report to us!"),
+                actions: <Widget>[
+                  FlatButton(
+                    child: new Text("Okay"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ]
+            );
+          }
+      );
+    }
+  }
+
+  void openlinkedin() async{
+    var url = '$linkedin';
+    if(await canLaunch(url)) {
+      await launch(url, universalLinksOnly: true);
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+                title: Text("Failed to open LinkedIn"),
                 content: Text("Please try again later. If still failing, please report to us!"),
                 actions: <Widget>[
                   FlatButton(
@@ -196,6 +224,7 @@ class ProfileState extends State<Profile> {
                         bio: bio,
                         instagram: instagram,
                         ringColor: ringColor,
+                        linkedin: linkedin,
                       ))).then((value) => reloadUser())
                     },
                   shape: RoundedRectangleBorder(
@@ -264,21 +293,41 @@ class ProfileState extends State<Profile> {
                                 color: Colors.white
                             ),
                           ),
-                          Padding(padding: EdgeInsets.only(top: Utilities.vScale(8, context))),
+                          Padding(padding: EdgeInsets.only(top: Utilities.vScale((linkedin=='' || linkedin==null)?0:8, context))),
                           SizedBox(
-                            height: Utilities.vScale(40, context),
-                            width: Utilities.scale(MediaQuery.of(context).size.width - 100, context),
-                            child: (instagram=='' || instagram==null)?null:FlatButton(
-                              onPressed: openIg,
+                            height: Utilities.vScale((linkedin=='' || linkedin==null)?0:40, context),
+                            width: Utilities.scale(MediaQuery.of(context).size.width/2, context),
+                            child: (linkedin=='' || linkedin==null)?null:FlatButton(
+                              onPressed: openlinkedin,
                               child: Text(
-                                  'Instagram: $instagram',
+                                  'LinkedIn',
                                   style: TextStyle(
                                     fontSize: Utilities.vScale(22,context),
                                     color: MaterialColor(0xFFcdcdcd, greyColorCodes),
                                   )
                               ),
+                              color: MaterialColor(0x88501f3a, darkMagentaColorCodes),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(Utilities.scale(25.0,context))
+                              ),
+                            ),
+                          ),
+                          Padding(padding: EdgeInsets.only(top: Utilities.vScale( (instagram=='' || instagram==null)?0:8, context))),
+                          SizedBox(
+                            height: Utilities.vScale( (instagram=='' || instagram==null)?0:40, context),
+                            width: Utilities.scale(MediaQuery.of(context).size.width/2, context),
+                            child: (instagram=='' || instagram==null)?null:FlatButton(
+                              onPressed: openig,
+                              child: Text(
+                                  'Instagram',
+                                  style: TextStyle(
+                                    fontSize: Utilities.vScale(22,context),
+                                    color: MaterialColor(0xFFcdcdcd, greyColorCodes),
+                                  )
+                              ),
+                              color: MaterialColor(0x88501f3a, darkMagentaColorCodes),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(Utilities.scale(25.0,context)),
                               ),
                             ),
                           ),
