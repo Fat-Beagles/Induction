@@ -13,6 +13,7 @@ class GalleryState extends State<Gallery> {
   FirebaseDatabase galleryDB;
   DatabaseReference galleryDBRef;
   DataSnapshot galleryItemsSnapshot;
+  String galleryText='';
 
   @override
   void initState(){
@@ -23,6 +24,9 @@ class GalleryState extends State<Gallery> {
   }
 
   void getGalleryItemsFromDB() async {
+    setState(() {
+      galleryText = "Please wait ...";
+    });
     DataSnapshot galleryItemsTempSnapshot = await galleryDBRef.once();
     if(mounted){
       setState(() {
@@ -30,6 +34,9 @@ class GalleryState extends State<Gallery> {
       });
     }
     getGalleryItemsFromSnapshot();
+    setState(() {
+      galleryText = "No items to view yet. Come back soon!";
+    });
   }
 
   void getGalleryItemsFromSnapshot(){
@@ -65,7 +72,7 @@ class GalleryState extends State<Gallery> {
               width: Utilities.scale(2*MediaQuery.of(context).size.width/3, context),
               child: Center(
                 child: Text(
-                  "No items to view yet. Come back soon!",
+                  galleryText,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: Utilities.vScale(25, context),

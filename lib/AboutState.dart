@@ -448,72 +448,97 @@ class AboutState extends State<About> {
               getContactRow("Ganesh Vilas", "chaudhari19116@iiitd.ac.in", "Vineet Joshi", "vineet19020@iiitd.ac.in"),
               Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
               Center(
-                child: SizedBox(
-                  width: Utilities.scale(MediaQuery.of(context).size.width/2 - 30, context),
-                  height: Utilities.vScale(50, context),
-                  child: FlatButton(
-                    color: MaterialColor(0xaa14a098, seaGreenColorCodes),
-                    onPressed: () async{
-                      const url = "https://www.iiitd.ac.in/contact";
-                      if(await(canLaunch(url))){
-                        await launch(url);
-                      }
-                      else{
-                        return showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                  content: Text("Cannot open URL"),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      child: new Text("Okay"),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    )
-                                  ]
-                              );
-                            }
-                        );
-                      }
-                    },
-                    child: Text(
-                        'More information',
-                        style: TextStyle(
-                            fontSize: Utilities.vScale(18,context),
-                            color: Colors.white
-                        )
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+//                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Center(
+                      child: SizedBox(
+                        width: Utilities.scale(MediaQuery.of(context).size.width/2 - 50, context),
+                        child: Center(
+                          child: Column(
+                            children: <Widget>[
+                              SizedBox(
+                                width: Utilities.scale(MediaQuery.of(context).size.width, context),
+                                height: Utilities.vScale(60, context),
+                                child: FlatButton(
+//                                color:  MaterialColor(0xFF114546, darkSeaGreenColorCodes),
+                                  onPressed: () async{
+                                    const url = "https://www.iiitd.ac.in/contact";
+                                    if(await(canLaunch(url))){
+                                      await launch(url);
+                                    }
+                                    else{
+                                      return showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                                content: Text("Cannot open URL"),
+                                                actions: <Widget>[
+                                                  FlatButton(
+                                                    child: new Text("Okay"),
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                  )
+                                                ]
+                                            );
+                                          }
+                                      );
+                                    }
+                                  },
+                                  child: Text(
+                                      'MORE INFO',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: Utilities.vScale(20,context),
+                                          color: MaterialColor(0xcccb2d6f, magentaColorCodes)
+                                      )
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(Utilities.scale(24,context))
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(Utilities.scale(20.0,context))
+                    Padding(padding: EdgeInsets.only(left: Utilities.vScale(10, context))),
+                    Center(
+                      child: SizedBox(
+                        width: Utilities.scale(MediaQuery.of(context).size.width/2 - 50, context),
+                        child: Center(
+                          child: Column(
+                            children: <Widget>[
+                              SizedBox(
+                                width: Utilities.scale(MediaQuery.of(context).size.width, context),
+                                height: Utilities.vScale(60, context),
+                                child: FlatButton(
+//                                color:  MaterialColor(0xFF114546, darkSeaGreenColorCodes),
+                                  onPressed: () => {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => AppInfo()))
+                                  },
+                                  child: Icon(
+                                    Icons.info_outline,
+                                    color: MaterialColor(0xcccb2d6f, magentaColorCodes),
+                                    size: Utilities.vScale(30,context),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(Utilities.scale(24,context))
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
-              Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
-              Center(
-                child: SizedBox(
-                  width: Utilities.scale(MediaQuery.of(context).size.width/2 - 30, context),
-                  height: Utilities.vScale(50, context),
-                  child: FlatButton(
-                    color: MaterialColor(0x88501f3a, darkMagentaColorCodes),
-                    onPressed: () => {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => AppInfo()))
-                    },
-                    child: Text(
-                        'App information',
-                        style: TextStyle(
-                            fontSize: Utilities.vScale(18,context),
-                            color: Colors.white
-                        )
-                    ),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(Utilities.scale(20.0,context))
-                    ),
-                  ),
-                ),
+                  ],
+                )
               ),
               Padding(padding: EdgeInsets.only(top: Utilities.vScale(20, context))),
             ],
