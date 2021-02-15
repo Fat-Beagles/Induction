@@ -1,17 +1,66 @@
 import "package:flutter/material.dart";
+import 'package:induction/FontAwesome.dart';
 import 'package:induction/Utilities.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'Primary.dart';
 import "ColorCodes.dart";
 import 'Login.dart';
 import 'Brochure.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class LoginState extends State<Login>{
   final emailController=TextEditingController();
   final passwordController=TextEditingController();
   final FirebaseAuth firebaseauth= FirebaseAuth.instance;
   FirebaseUser user;
+  DatabaseReference userDBRef;
+
+  void initState(){
+    if(mounted){
+      setState(() {
+        checkLogin();
+      });
+    }
+    super.initState();
+  }
+
+  void checkLogin() async{
+    userDBRef = FirebaseDatabase(databaseURL: DotEnv().env['DB_URL']).reference().child('version');
+    int firebaseVersion = (await userDBRef.once()).value;
+    int appVersion = int.parse(DotEnv().env['APP_VER']);
+    if(appVersion != firebaseVersion){
+      return showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+                content: Text("New version available. Please download from https://bit.ly/induction-iiitd-app"),
+                actions: <Widget>[
+                  FlatButton(
+                    child: new Text("Go"),
+                    onPressed: () async{
+                      await launch('https://bit.ly/induction-iiitd-app', universalLinksOnly: true);
+                    },
+                  )
+                ]
+            );
+          }
+      );
+    }
+    FirebaseUser user_ = await firebaseauth.currentUser();
+    if(user_ != null){
+      Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Primary(
+              title: "Home",
+              user: user_
+          ))
+      );
+    }
+  }
+
   @override
   void dispose(){
     emailController.dispose();

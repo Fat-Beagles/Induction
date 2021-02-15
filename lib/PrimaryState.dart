@@ -62,7 +62,9 @@ class PrimaryState extends State<Primary> {
         pageChanged(index);
       },
       children: <Widget>[
-        Home(),
+        Home(
+          user: widget.user,
+        ),
         Schedule(
           user: widget.user,
         ),

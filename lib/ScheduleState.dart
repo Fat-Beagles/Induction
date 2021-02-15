@@ -60,6 +60,7 @@ class ScheduleState extends State<Schedule> {
         days.sort((a,b)=> Utilities.compareDays(a, b));
       });
     }
+    print(days);
   }
 
   Widget dayTile(BuildContext context, int day, int month, int wDay, int dayNum){

@@ -174,31 +174,14 @@ class Utilities {
     return a['name'].compareTo(b['name']);
   }
 
-  static MaterialColor getGroupColor(String color){
-    MaterialColor colorToReturn = Colors.grey;
+  static dynamic getGroupColor(int color){
+    List<dynamic> colors = [Colors.grey[600], Colors.brown[900], Colors.brown[200], Colors.blueGrey[700], Colors.deepPurple[700], Colors.deepPurpleAccent, Colors.purple[600], Colors.indigo[300], Colors.indigoAccent, Colors.blue, Colors.lightBlue[100], Colors.cyan[700], Colors.cyanAccent[100], Colors.pinkAccent, Colors.tealAccent, Colors.green[800], Colors.greenAccent[100], Colors.lightGreen[100], Colors.lightGreenAccent, Colors.limeAccent, Colors.lime[300], Colors.yellow[800], Colors.yellowAccent[400], Colors.amber[400], Colors.teal[400], Colors.white];
+    Color colorToReturn = Colors.white;
     try{
-      switch(color.toLowerCase()){
-        case "red": {
-          colorToReturn = Colors.red;
-        }
-        break;
-        case "blue": {
-          colorToReturn = Colors.blue;
-        }
-        break;
-        case "green": {
-          colorToReturn = Colors.green;
-        }
-        break;
-        case "black": {
-          colorToReturn = Colors.black;
-        }
-        break;
-      }
+      return colors[color];
     }
-    finally {
-      // Do nothing. Just to check if color is a string.
+    catch(e){
+      return colorToReturn;
     }
-    return colorToReturn;
   }
 }

@@ -7,7 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 import 'package:induction/Utilities.dart';
+import 'package:dio/dio.dart';
 import 'ColorCodes.dart';
 import 'EditProfile.dart';
 
@@ -58,6 +60,16 @@ class EditProfileState extends State<EditProfile> {
     super.initState();
   }
 
+  Future<dynamic> uploadImage(File file) async {
+    var request = http.MultipartRequest('POST', Uri.parse(DotEnv().env['JUGADU_STORAGE']));
+    FormData formData = new FormData.fromMap({
+      "rollnumber": uid,
+      "file": new MultipartFile.fromBytes(file.readAsBytesSync(), filename: file.path.split('/').last)
+    });
+    dynamic response = await Dio().post( DotEnv().env['JUGADU_STORAGE'], data: formData);
+    return response;
+  }
+
   Future<StorageReference> uploadPicture() async {
     final StorageReference ref = storage.ref().child('ProfilePictures').child('$uid.jpeg');
     final StorageUploadTask uploadTask = ref.putFile(profileImage);
@@ -69,15 +81,6 @@ class EditProfileState extends State<EditProfile> {
     setState(() {
       timeSaved = new DateTime.now().millisecondsSinceEpoch;
     });
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-              title: Text("Updating"),
-              content: Text("Please Wait ..."),
-          );
-        }
-    );
     try{
       await widget.user.updateEmail(email);
     }
@@ -106,8 +109,8 @@ class EditProfileState extends State<EditProfile> {
     try{
       UserUpdateInfo newInfo = new UserUpdateInfo();
       if(profileImage!=null){
-        StorageReference ref = await uploadPicture();
-        String url = await ref.getDownloadURL();
+        dynamic res = await uploadImage(profileImage);
+        String url =  DotEnv().env['IP_ADDR'] + res.data['url'];
         if(mounted){
           setState(() {
             newPhotoUrl = url;
@@ -118,15 +121,17 @@ class EditProfileState extends State<EditProfile> {
       if(displayName.replaceAll(' ', '').length!=0){
         newInfo.displayName = displayName;
         await widget.user.updateProfile(newInfo);
+        await userDataRef.child('photoUrl').set(newPhotoUrl);
       }
     }
     catch(e){
+      print(e.toString());
       await widget.user.updateEmail(oldEmail);
       return showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
-                title: Text("Failed to update user name!"),
+                title: Text("Failed to update!"),
                 content: Text("Please try again later."),
                 actions: <Widget>[
                   FlatButton(
@@ -166,6 +171,10 @@ class EditProfileState extends State<EditProfile> {
           }
       );
     }
+    widget.user.reload();
+    setState(() {
+      photoUrl = newPhotoUrl;
+    });
     Navigator.pop(context);
   }
 
@@ -430,7 +439,7 @@ class EditProfileState extends State<EditProfile> {
                       width: Utilities.scale(154,context),
                       height: Utilities.vScale(MediaQuery.of(context).size.height,context)/15,
                       child: FlatButton(
-                        onPressed: () {
+                        onPressed: () async{
                           setState(() {
                             email = emailController.text;
                             bio = bioController.text;
@@ -438,7 +447,8 @@ class EditProfileState extends State<EditProfile> {
                             displayName = nameController.text;
                             linkedin = linkedinController.text;
                           });
-                          applyChanges();
+//                          applyChanges();
+                          await applyChanges();
                         },
                         child: Text(
                             'Save',

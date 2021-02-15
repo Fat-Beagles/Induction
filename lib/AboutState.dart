@@ -194,7 +194,7 @@ class AboutState extends State<About> {
               color: MaterialColor(0xff262833, darkSeaGreenColorCodes),
               borderRadius: BorderRadius.circular(Utilities.getRoundImageSize(355, context)/2),
               border: Border.all(
-                  color: Utilities.getGroupColor(user['groupCode'].toString()), //Border color same as the group color.
+                  color: Utilities.getGroupColor(int.parse(user['groupCode'].substring(1))), //Border color same as the group color.
                   width: Utilities.scale(5,context)
               ),
             ),
@@ -297,9 +297,9 @@ class AboutState extends State<About> {
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      renderIC();
-    });
+//    setState(() {
+//      renderIC();
+//    });
     return Scaffold(
       backgroundColor: MaterialColor(0xff262833, darkSeaGreenColorCodes),
       body: Container(
@@ -414,39 +414,41 @@ class AboutState extends State<About> {
               Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
               getContactRow("Sonal Garg", "sonal@iiitd.ac.in", "Ashutosh Brahma", "ashutosh@iiitd.ac.in"),
               Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
+              getContactRow("Kartikeya Verma", "kartikeya17059@iiitd.ac.in", "Raunak Mokhasi", "raunak17085@iiitd.ac.in"),
+              Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
               getContactRow("Vaibhav Goel", "vaibhav16111@iiitd.ac.in", "Arnav Tandon", "arnav18278@iiitd.ac.in"),
               Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
               getContactRow("Pranay Jain", "pranay18358@iiitd.ac.in", "Jasmine Kaur", "jasmine18287@iiitd.ac.in"),
               Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
-              getContactRow("Ankur Goel", "ankur19030@iiitd.ac.in", "Yatharth Taneja", "yatharth19346@iiitd.ac.in"),
+              getContactRow("Pritish Wadhwa", "pritish19440@iiitd.ac.in", "Vasu Goel", "vasu18322@iiitd.ac.in"),
               Padding(padding: EdgeInsets.only(top: Utilities.vScale(25, context))),
-              Center(
-                child: Text(
-                  "VOLUNTEERS",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: Utilities.vScale(40,context),
-                      fontWeight: FontWeight.bold,
-                      color: MaterialColor(0xcccb2d6f, magentaColorCodes),
-                      fontFamily: "Poppins"
-                  ),
-                ),
-              ),
-              Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
-              getContactRow("Prakhar Shukla", "prakhar19187@iiitd.ac.in", "Sonal Aggarwal", "sonal19047@iiitd.ac.in"),
-              Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
-              getContactRow("Akshaj Patil", "akshaj19111@iiitd.ac.in", "Pranav Jain", "pranav19207@iiitd.ac.in"),
-              Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
-              getContactRow("Divisha Sharma", "divisha19204@iiitd.ac.in", "Ishita Agarwal", "ishita19013@iiitd.ac.in"),
-              Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
-              getContactRow("Stuti Jain", "stuti19173@iiitd.ac.in", "Pranjal Pandey", "pranjal19208@iiitd.ac.in"),
-              Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
-              getContactRow("Mukesh Kumar", "mukesh19185@iiitd.ac.in", "Kritika Vazirani", "kritika19206@iiitd.ac.in"),
-              Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
-              getContactRow("Srinath J", "srinath19197@iiitd.ac.in", "Sayandip Kar", "sayandip19194@iiitd.ac.in"),
-              Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
-              getContactRow("Ganesh Vilas", "chaudhari19116@iiitd.ac.in", "Vineet Joshi", "vineet19020@iiitd.ac.in"),
-              Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
+//              Center(
+//                child: Text(
+//                  "VOLUNTEERS",
+//                  textAlign: TextAlign.center,
+//                  style: TextStyle(
+//                      fontSize: Utilities.vScale(40,context),
+//                      fontWeight: FontWeight.bold,
+//                      color: MaterialColor(0xcccb2d6f, magentaColorCodes),
+//                      fontFamily: "Poppins"
+//                  ),
+//                ),
+//              ),
+//              Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
+//              getContactRow("Prakhar Shukla", "prakhar19187@iiitd.ac.in", "Sonal Aggarwal", "sonal19047@iiitd.ac.in"),
+//              Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
+//              getContactRow("Akshaj Patil", "akshaj19111@iiitd.ac.in", "Pranav Jain", "pranav19207@iiitd.ac.in"),
+//              Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
+//              getContactRow("Divisha Sharma", "divisha19204@iiitd.ac.in", "Ishita Agarwal", "ishita19013@iiitd.ac.in"),
+//              Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
+//              getContactRow("Stuti Jain", "stuti19173@iiitd.ac.in", "Pranjal Pandey", "pranjal19208@iiitd.ac.in"),
+//              Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
+//              getContactRow("Mukesh Kumar", "mukesh19185@iiitd.ac.in", "Kritika Vazirani", "kritika19206@iiitd.ac.in"),
+//              Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
+//              getContactRow("Srinath J", "srinath19197@iiitd.ac.in", "Sayandip Kar", "sayandip19194@iiitd.ac.in"),
+//              Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
+//              getContactRow("Ganesh Vilas", "chaudhari19116@iiitd.ac.in", "Vineet Joshi", "vineet19020@iiitd.ac.in"),
+//              Padding(padding: EdgeInsets.only(top: Utilities.vScale(15, context))),
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

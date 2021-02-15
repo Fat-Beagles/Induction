@@ -135,7 +135,9 @@ class HomeState extends State<Home> {
         onPressed: () => {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Gallery()))
+                              MaterialPageRoute(builder: (context) => Gallery(
+                                user: widget.user
+                              )))
         },
       ),
     );

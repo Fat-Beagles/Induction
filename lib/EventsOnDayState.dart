@@ -19,6 +19,7 @@ class EventsOnDayState extends State<EventsOnDay> {
   }
 
   void getEventsFromSchedule() async{
+    print(widget.userGroup);
     if(mounted){
       setState(() {
         events = new List();

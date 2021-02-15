@@ -9,7 +9,7 @@ class EditProfile extends StatefulWidget {
   final String bio;
   final String instagram;
   final String linkedin;
-  final MaterialColor ringColor;
+  final dynamic ringColor;
 
   @override
   EditProfileState createState() => EditProfileState();

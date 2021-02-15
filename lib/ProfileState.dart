@@ -21,7 +21,7 @@ class ProfileState extends State<Profile> {
   String linkedin='';
   dynamic groupColor='';
   bool isVerified=false;
-  MaterialColor ringColor;
+  dynamic ringColor;
   String instagram='';
   FirebaseStorage storage;
   FirebaseDatabase userDB;
@@ -39,7 +39,7 @@ class ProfileState extends State<Profile> {
           displayName = user.displayName;
           email = user.email;
           photoUrl = user.photoUrl;
-          photoUrl = photoUrl==null?DotEnv().env['DEF_IMAGE']:photoUrl;
+          photoUrl = (photoUrl==null || photoUrl=='')?DotEnv().env['DEF_IMAGE']:photoUrl;
           uid = user.uid;
           userDB = FirebaseDatabase(databaseURL: DotEnv().env['DB_URL']);
           userDataRef= userDB.reference().child('users/$uid');//.child('uid');
@@ -50,9 +50,10 @@ class ProfileState extends State<Profile> {
           displayName = user['name'];
           email = user['email'];
           photoUrl = user['photoUrl'];
-          photoUrl = photoUrl==null?DotEnv().env['DEF_IMAGE']:photoUrl;
+          photoUrl = (photoUrl==null || photoUrl=='')?DotEnv().env['DEF_IMAGE']:photoUrl;
           groupColor = user['groupCode'];
-          ringColor = Utilities.getGroupColor(groupColor.toString());
+          branch = user['branch'];
+          ringColor = Utilities.getGroupColor(int.parse(groupColor.substring(1)));
           bio = user['bio'];
           isVerified = user['isVerified'];
           instagram = user['instaHandle'];
@@ -61,38 +62,44 @@ class ProfileState extends State<Profile> {
       });
     }
     if(activeUser==1) {
+      reloadUser();
       getValFromDB();
     }
     super.initState();
   }
 
   void reloadUser() async{
-    await user.reload();
     var _user = await FirebaseAuth.instance.currentUser();
-    if(mounted){
-      setState(() {
-        user = _user;
-        displayName = user.displayName;
-        email = user.email;
-        photoUrl = user.photoUrl;
-        photoUrl = photoUrl==null?DotEnv().env['DEF_IMAGE']:photoUrl;
-        uid = user.uid;
-        userDB = FirebaseDatabase(databaseURL: DotEnv().env['DB_URL']);
-        userDataRef= userDB.reference().child('users/$uid');//.child('uid');
-      });
+    if(_user == null){
+      Navigator.of(context).popUntil((route) => route.isFirst);
     }
-    getValFromDB();
+    else{
+      await user.reload();
+      _user = await FirebaseAuth.instance.currentUser();
+      if(mounted){
+        setState(() {
+          user = _user;
+          displayName = user.displayName;
+          email = user.email;
+          photoUrl = user.photoUrl;
+          photoUrl = (photoUrl==null || photoUrl=='')?DotEnv().env['DEF_IMAGE']:photoUrl;
+          uid = user.uid;
+          userDB = FirebaseDatabase(databaseURL: DotEnv().env['DB_URL']);
+          userDataRef= userDB.reference().child('users/$uid');//.child('uid');
+        });
+      }
+      getValFromDB();
+    }
   }
 
   void getValFromDB() async{
     DataSnapshot data = await userDataRef.once();
     dynamic dataValues = data.value;
-    print(dataValues);
     if(mounted){
       setState(() {
         branch = dataValues['branch'];
         groupColor = dataValues['groupCode'];
-        ringColor = Utilities.getGroupColor(dataValues['groupCode']);
+        ringColor = Utilities.getGroupColor(int.parse(dataValues['groupCode'].substring(1)));
         bio = dataValues['bio'];
         instagram = dataValues['instaHandle'];
         linkedin = dataValues['linkedin'];

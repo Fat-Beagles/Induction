@@ -12,9 +12,13 @@ import 'SearchUsers.dart';
 
 class SearchUsersState extends State<SearchUsers> {
   List<dynamic> allUsers = new List();
+  int numUsers = 0;
   FirebaseDatabase usersDB;
   DatabaseReference usersDBRef;
   FirebaseStorage storage;
+  bool _hasMore = true;
+  int lenFetched = 0;
+  bool _isLoading = true;
 
   @override
   void initState(){
@@ -25,8 +29,16 @@ class SearchUsersState extends State<SearchUsers> {
         storage = FirebaseStorage(storageBucket: DotEnv().env['STORAGE_URL']);
       });
     }
+//    _loadMore();
     getUsersFromDB();
     super.initState();
+  }
+
+  void getNumUsers() async {
+    int num = (await usersDBRef.once()).value.length;
+    setState(() {
+      numUsers = num;
+    });
   }
 
   void getUsersFromDB() async {
@@ -35,9 +47,7 @@ class SearchUsersState extends State<SearchUsers> {
     values.forEach((k,v) async {
       try{
         if(k!=widget.user.uid && values[k]['name'].replaceAll(' ','')!=''){
-          try{
-            values[k]['photoUrl'] = await storage.ref().child('ProfilePictures').child('$k.jpeg').getDownloadURL();
-          } catch(e) {
+          if(values[k]['photoUrl']==null || values[k]['photoUrl']==''){
             values[k]['photoUrl'] = DotEnv().env['DEF_IMAGE'];
           }
           if(mounted){
@@ -54,7 +64,37 @@ class SearchUsersState extends State<SearchUsers> {
     });
   }
 
+//  void _loadMore() async{
+//    setState(() {
+//      _isLoading = true;
+//    });
+//    int count = 0;
+//    Query dataX;
+//    if(allUsers.length == 0){
+//      dataX = usersDBRef.orderByChild("name").limitToFirst(50);
+//    }
+//    else{
+//      dataX = usersDBRef.orderByChild("name").startAt(allUsers.last['uid'], key: 'uid').limitToFirst(50);
+//    }
+//    dataX.onChildAdded.listen((event) {
+//      count ++;
+//      if(mounted){
+//        setState(() {
+//          if(event.snapshot.value['name']!=null && event.snapshot.value['name'].replaceAll(' ','')!='') {
+//            allUsers.add(event.snapshot.value);
+//          }
+//        });
+//      }
+//      if(count == 50){
+//        setState(() {
+//          _isLoading = false;
+//        });
+//      }
+//    });
+//  }
+
   Widget userTile(dynamic user){
+    print(user);
     int active = 0 ;
     List<Widget> profileImage = [
       Center(
@@ -78,7 +118,7 @@ class SearchUsersState extends State<SearchUsers> {
               color: MaterialColor(0xff262833, darkSeaGreenColorCodes),
               borderRadius: BorderRadius.circular(Utilities.getRoundImageSize(355, context)/2),
               border: Border.all(
-                  color: Utilities.getGroupColor(user['groupCode'].toString()), //Border color same as the group color.
+                  color: Utilities.getGroupColor(int.parse(user['groupCode'].substring(1))), //Border color same as the group color.
                   width: Utilities.scale(5,context)
               ),
             ),
@@ -187,5 +227,30 @@ class SearchUsersState extends State<SearchUsers> {
             )
         )
     );
+//    return Scaffold(
+//      backgroundColor: MaterialColor(0xff262833, darkSeaGreenColorCodes),
+//      body: ListView.builder(
+//          padding: EdgeInsets.only(left: Utilities.scale(30, context), right: Utilities.scale(30, context), top: Utilities.vScale(13, context)),
+//          itemCount: _hasMore? lenFetched+1 : lenFetched,
+//          itemBuilder: (BuildContext context, int index) {
+//            if(index >= allUsers.length){
+//              if(!_isLoading){
+//                _loadMore();
+//              }
+//              return Center(
+//                child: SizedBox(
+//                  child: CircularProgressIndicator(),
+//                  height: 24,
+//                  width: 24,
+//                ),
+//              );
+//            }
+//            return Padding(
+//                padding: EdgeInsets.only(top: Utilities.vScale(15, context)),
+//                child: userTile(allUsers[index])
+//            );
+//          }
+//      ),
+//    );
   }
 }
